@@ -11,3 +11,4 @@ class UserResponse(BaseModel):
     username: str
     email: str
 # fix
+# password field updated to mixed datatype
