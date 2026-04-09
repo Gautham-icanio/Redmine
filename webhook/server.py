@@ -46,13 +46,23 @@ async def github_webhook(request: Request,
     verify_signature(body, x_hub_signature_256)
     data = await request.json()
 
+    if x_github_event == 'push':
+        branch = data.get('ref', '').replace('refs/heads/', '')
+        author = data.get('pusher', {}).get('name', 'unknown')
+        ticket_id = extract_ticket_id(branch)
+        if ticket_id:
+            move_redmine_ticket(ticket_id, STATUS_IN_PROGRESS)
+            notify_google_chat(f'Branch pushed by {author} | #{ticket_id} -> In Progress')
+            return {'status': 'moved', 'ticket': ticket_id}
+        return {'status': 'skipped', 'reason': 'no ticket ID found'}
+
     pr = data.get('pull_request', {})
     action = data.get('action', '')
     title = pr.get('title', '')
     branch = pr.get('head', {}).get('ref', '')
     author = pr.get('user', {}).get('login', 'unknown')
-
     ticket_id = extract_ticket_id(title) or extract_ticket_id(branch)
+
     if not ticket_id:
         return {'status': 'skipped', 'reason': 'no ticket ID found'}
 
