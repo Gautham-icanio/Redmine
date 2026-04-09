@@ -22,7 +22,7 @@ def verify_signature(payload, sig_header):
         raise HTTPException(status_code=401, detail='Invalid signature')
 
 def extract_ticket_id(text):
-    m = re.search(r'\[#(\d+)\]|redmine[-_]?(\d+)|#(\d+)', text or '')
+    m = re.search(r'\[#(\d+)\]|redmine[-_]?(\d+)|feature/(\d+)|#(\d+)', text or '')
     return next((g for g in m.groups() if g), None) if m else None
 
 def move_redmine_ticket(ticket_id, status_id):
