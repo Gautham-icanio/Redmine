@@ -105,7 +105,7 @@ async def github_webhook(
             [f'- {c["id"][:7]} {c["message"].split(chr(10))[0]}' for c in commits])
         comment = (
             f'Branch pushed for this ticket\n\n'
-            f'Developer: {sender_login}\n'
+            f'Author: {sender_login}\n'
             f'Branch: {branch_name}\n'
             f'Repository: {repo_name}\n'
             f'Branch URL: {repo_url}/tree/{branch_name}\n'
